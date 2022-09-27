@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ActiveQuiz from '../../ActiveQuiz/ActiveQuiz';
 import classes from './Quiz.css';
+import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
 
 class Quiz extends Component {
     state = {
@@ -15,7 +15,6 @@ class Quiz extends Component {
             }
         ]
     }
-
 
     render() {
         return (
