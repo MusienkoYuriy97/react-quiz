@@ -7,6 +7,7 @@ function isInvalid({ valid, touched, shouldValidate }) {
 
 const Input = props => {
     const inputType = props.type || 'text'
+    const autoComplete = props.autoComplete || 'off'
     const cls = [classes.Input]
     const htmlFor = `${inputType}-${Math.random()}`
 
@@ -22,9 +23,10 @@ const Input = props => {
                 id={htmlFor}
                 value={props.value}
                 onChange={props.onChange}
+                autoComplete={autoComplete}
             >
             </input>
-            {isInvalid(props) ? <span>props.errorMessage || 'Введи верное значение'</span> : null}
+            {isInvalid(props) ? <span>{props.errorMessage || 'Введи верное значение'}</span> : null}
         </div>
     )
 }

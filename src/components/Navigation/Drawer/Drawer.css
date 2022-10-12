@@ -37,7 +37,11 @@
     transition: opacity .3s;
 }
 
-.Drawer ul li a:hover, .active {
-    opacity: .7;
+.my {
+    color: red !important;
 }
 
+.Drawer ul li a:hover {
+    opacity: .7;
+    color: aquamarine;
+}

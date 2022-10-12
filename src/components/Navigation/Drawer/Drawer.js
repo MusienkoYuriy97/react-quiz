@@ -12,7 +12,7 @@ const links = [
 class Drawer extends Component {
 
     handleClick = () => {
-        this.props.onClose() 
+        this.props.onClose()
     }
 
     renderLinks() {
@@ -21,8 +21,10 @@ class Drawer extends Component {
                 <li key={index}>
                     <NavLink
                         to={link.to}
-                        exact={link.exact}
-                        activeClassName={classes.active}
+                        end={link.exact}
+                        className={({ isActive }) => {
+                            if (isActive) return classes.my;                            
+                          }}
                         onClick={this.handleClick}
                     >
                         {link.label}
