@@ -2,37 +2,17 @@ import React, { Component } from 'react';
 import classes from './Quiz.css';
 import ActiveQuiz from '../../components/ActiveQuiz/ActiveQuiz'
 import FinishedQuiz from '../../components/FinishedQuiz/FinishedQuiz';
+import axios from '../../axios/axios-quiz';
+import Loader from '../../components/ui/Loader/Loader';
 
 class Quiz extends Component {
     state = {
-        results: {}, // {[id]: "success/error"}
+        results: {},
         isQuizFinished: false,
         activeQuestion: 0,
-        answerState: null, // {[id]: "success/error"}
-        quiz: [
-            {
-                id: 1,
-                question: 'Java - это?',
-                rightAnswerId: 3,
-                answers: [
-                    { text: 'Кофе', id: 1 },
-                    { text: 'Чай', id: 2 },
-                    { text: 'Язык программирования', id: 3 },
-                    { text: 'Планета', id: 4 },
-                ]
-            },
-            {
-                id: 2,
-                question: 'Сколько уровней доступа существует у java метода?',
-                rightAnswerId: 4,
-                answers: [
-                    { text: '1', id: 1 },
-                    { text: '2', id: 2 },
-                    { text: '3', id: 3 },
-                    { text: '4', id: 4 },
-                ]
-            }
-        ]
+        answerState: null,
+        quiz: [],
+        loading: true
     }
 
     onAnswerClickHandler = (answerId) => {
@@ -77,27 +57,50 @@ class Quiz extends Component {
         return this.state.activeQuestion + 1 === this.state.quiz.length;
     }
 
+
+    async componentDidMount() {
+        try {
+           
+            console.log(this.props.match)
+            const response = await axios.get(`quizes/${this.props.match.params.id}.json`)
+            const quiz = response.data
+            this.setState({
+                quiz,
+                loading: false
+            })
+        } catch (e) {
+            console.log(e)
+        }
+    }
+
     render() {
         console.log('quiz render')
         return (
             <div className={classes.Quiz}>
                 <div className={classes.QuizWrapper}>
-                    {this.state.isQuizFinished
-                        ? <FinishedQuiz
-                            results={this.state.results}
-                            quiz={this.state.quiz}
-                            onRetry={this.retryHandler}
-                        />
-                        : [<h1 key={'1'}>Ответьте на все вопросы</h1>,
-                        <ActiveQuiz
-                            key={'2'}
-                            state={this.state.answerState}
-                            answers={this.state.quiz[this.state.activeQuestion].answers}
-                            question={this.state.quiz[this.state.activeQuestion].question}
-                            onAnswerClick={this.onAnswerClickHandler}
-                            quizLength={this.state.quiz.length}
-                            answerNumber={this.state.activeQuestion + 1}
-                        />]}
+                    <h1 key={'1'}>Ответьте на все вопросы</h1>
+
+                    {
+                        this.state.loading
+                            ? <Loader />
+                            : this.state.isQuizFinished
+                                ? <FinishedQuiz
+                                    results={this.state.results}
+                                    quiz={this.state.quiz}
+                                    onRetry={this.retryHandler}
+                                />
+                                : <ActiveQuiz
+                                    key={'2'}
+                                    state={this.state.answerState}
+                                    answers={this.state.quiz[this.state.activeQuestion].answers}
+                                    question={this.state.quiz[this.state.activeQuestion].question}
+                                    onAnswerClick={this.onAnswerClickHandler}
+                                    quizLength={this.state.quiz.length}
+                                    answerNumber={this.state.activeQuestion + 1}
+                                />
+
+                    }
+
                 </div>
             </div>
         )
