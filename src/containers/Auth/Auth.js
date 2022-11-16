@@ -2,9 +2,10 @@ import React, { Component } from 'react'
 import Button from '../../components/ui/Button/Button';
 import Input from '../../components/ui/Input/Input';
 import classes from './Auth.css';
-import axios from 'axios';
+import { connect } from 'react-redux';
+import { auth } from '../../store/actions/auth';
 
-export default class Auth extends Component {
+class Auth extends Component {
 
     state = {
         isFormValid: false,
@@ -41,35 +42,20 @@ export default class Auth extends Component {
         event.preventDefault()
     }
 
-    handleLogin = async () => {
-        const request = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
-
-        try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyBaVxY8qXAH44OTUOXyUhbvQ-X8pCxjOLs', request);
-            console.log(response.data)
-        } catch (e) {
-            console.log(e)
-        }
+    handleLogin = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            true)
+        this.props.history.push('/')
     }
 
 
-    handleRegistration = async () => {
-        const request = {
-            email: this.state.formControls.email.value,
-            password: this.state.formControls.password.value,
-            returnSecureToken: true
-        }
-
-        try {
-            const response = await axios.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyBaVxY8qXAH44OTUOXyUhbvQ-X8pCxjOLs', request);
-            console.log(response.data)
-        } catch (e) {
-            console.log(e)
-        }
+    handleRegistration = () => {
+        this.props.auth(
+            this.state.formControls.email.value,
+            this.state.formControls.password.value,
+            false)
     }
 
     validateEmail = (email) => {
@@ -169,3 +155,10 @@ export default class Auth extends Component {
         )
     }
 }
+
+export default connect(
+    null,
+    dispatch => ({
+        auth: (email, password, isLogin) => dispatch(auth(email, password, isLogin))
+    })
+)(Auth)
